@@ -1,0 +1,41 @@
+package Logging.writeStream;
+
+import com.wm.data.*;
+import com.wm.util.Values;
+import com.wm.app.b2b.server.Service;
+import com.wm.app.b2b.server.ServiceException;
+
+public final class writeLogStream_SVC
+
+{
+
+	/** 
+	 * The primary method for the Java service
+	 *
+	 * @param pipeline
+	 *            The IData pipeline
+	 * @throws ServiceException
+	 */
+	public static final void writeLogStream(IData pipeline) throws ServiceException {
+		IDataCursor idc = pipeline.getCursor();
+		com.wm.app.b2b.server.LogOutputStream os = 
+		  (com.wm.app.b2b.server.LogOutputStream)IDataUtil.get(idc, "logStream");
+		String message = IDataUtil.getString(idc, "message");
+		idc.destroy();
+		
+		os.write(message);
+	}
+	
+	// --- <<IS-BEGIN-SHARED-SOURCE-AREA>> ---
+	
+	
+	
+	// --- <<IS-END-SHARED-SOURCE-AREA>> ---
+
+	final static writeLogStream_SVC _instance = new writeLogStream_SVC();
+
+	static writeLogStream_SVC _newInstance() { return new writeLogStream_SVC(); }
+
+	static writeLogStream_SVC _cast(Object o) { return (writeLogStream_SVC)o; }
+
+}

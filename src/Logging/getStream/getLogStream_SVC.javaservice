@@ -1,0 +1,57 @@
+package Logging.getStream;
+
+import com.wm.data.*;
+import com.wm.util.Values;
+import com.wm.app.b2b.server.Service;
+import com.wm.app.b2b.server.ServiceException;
+import com.wm.app.b2b.server.LogOutputStream;
+import com.wm.app.b2b.server.ServerAPI;
+import java.util.Hashtable;
+
+public final class getLogStream_SVC
+
+{
+
+	/** 
+	 * The primary method for the Java service
+	 *
+	 * @param pipeline
+	 *            The IData pipeline
+	 * @throws ServiceException
+	 */
+	public static final void getLogStream(IData pipeline) throws ServiceException {
+		IDataCursor idc = pipeline.getCursor();
+		String logfile = IDataUtil.getString(idc, "logfile");
+		//Hashtable openLogFiles = new Hashtable();
+		boolean newLog = false;
+		LogOutputStream os = 
+		  (LogOutputStream) openLogFiles.get(logfile); // get existing stream for this filename, if present
+		
+		if(os == null)
+		{
+		  os = ServerAPI.getLogStream(logfile);
+		  openLogFiles.put(logfile, os); // keep track of this stream for future use
+		  newLog = true;
+		}
+		
+		IDataUtil.put(idc, "logStream", os);
+		IDataUtil.put(idc, "newLog", (newLog+""));
+		idc.destroy();
+		
+		
+			
+	}
+	
+	// --- <<IS-BEGIN-SHARED-SOURCE-AREA>> ---
+	
+	public static final Hashtable openLogFiles = new Hashtable();		
+	
+	// --- <<IS-END-SHARED-SOURCE-AREA>> ---
+
+	final static getLogStream_SVC _instance = new getLogStream_SVC();
+
+	static getLogStream_SVC _newInstance() { return new getLogStream_SVC(); }
+
+	static getLogStream_SVC _cast(Object o) { return (getLogStream_SVC)o; }
+
+}

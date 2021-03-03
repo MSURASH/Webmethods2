@@ -1,0 +1,47 @@
+package Logging.closeStream;
+
+import com.wm.data.*;
+import com.wm.util.Values;
+import com.wm.app.b2b.server.Service;
+import com.wm.app.b2b.server.ServiceException;
+
+public final class closeLogStream_SVC
+
+{
+
+	/** 
+	 * The primary method for the Java service
+	 *
+	 * @param pipeline
+	 *            The IData pipeline
+	 * @throws ServiceException
+	 */
+	public static final void closeLogStream(IData pipeline) throws ServiceException {
+		IDataCursor idc = pipeline.getCursor();
+		String logfile = IDataUtil.getString(idc, "logfile");
+		idc.destroy();
+		java.util.Hashtable openLogFiles = new java.util.Hashtable();
+		com.wm.app.b2b.server.LogOutputStream os = 
+			(com.wm.app.b2b.server.LogOutputStream)openLogFiles.get(logfile);
+			
+		if(os != null)
+		{
+			openLogFiles.remove(logfile); // stop tracking this one
+			os.close();
+		}
+	}
+	
+	// --- <<IS-BEGIN-SHARED-SOURCE-AREA>> ---
+	
+	//private static final java.util.Hashtable openLogFiles = new java.util.Hashtable();
+		
+	
+	// --- <<IS-END-SHARED-SOURCE-AREA>> ---
+
+	final static closeLogStream_SVC _instance = new closeLogStream_SVC();
+
+	static closeLogStream_SVC _newInstance() { return new closeLogStream_SVC(); }
+
+	static closeLogStream_SVC _cast(Object o) { return (closeLogStream_SVC)o; }
+
+}
